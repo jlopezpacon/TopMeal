@@ -1,0 +1,181 @@
+{% load static %}
+{% load rating_color %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TopMeal</title>
+    <link rel="stylesheet" href="{% static 'css/base/inicio.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script defer src="{% static 'base/js/interfaz.js' %}"></script>
+    <link rel="icon" href="{% static 'img/base/logo.png' %}" type="image/x-icon">
+</head>
+<body>
+    <!-- Sticky Navbar -->
+    <nav class="navbar">
+        <div class="navbar-logo">
+            
+            <img src="{% static 'img/base/logo.png' %}" alt="TopMeal Logo">
+            
+            <a href="{% url 'inicio' %}">
+                <span>TopMeal</span>
+            </a>
+            
+            
+        </div>
+        
+        <div class="navbar-actions">
+            <a href="{% url 'register' %}" class="btn-outline">Registrarse</a>
+            <a href="{% url 'login' %}" class="btn-primary">Iniciar Sesión</a>
+        </div>
+        <button class="navbar-toggle" aria-label="Abrir menú">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <h1>¡Descubre, reserva y disfruta!</h1>
+            <p class="hero-tagline">Tu comida favorita, en tu mesa o en tu restaurante preferido. <br>Explora cientos de opciones cerca de ti.</p>
+            <!-- NUEVA barra de búsqueda de restaurantes -->
+            <form class="restaurant-search-bar" autocomplete="off" role="search" aria-label="Buscar restaurantes por nombre" style="margin-bottom:18px;">
+                <input type="text" placeholder="Buscar restaurante por nombre" aria-label="Buscar restaurante por nombre">
+                <button type="submit">Buscar</button>
+                <!-- El botón limpiar se añade por JS -->
+            </form>
+            <!-- Input de ubicación (solo ubicación, no búsqueda de restaurantes) -->
+            <form class="location-bar" autocomplete="off" role="form" aria-label="Ingresar ubicación" style="margin-bottom:18px;">
+                <input type="text" placeholder="¿A dónde enviamos tu comida?" aria-label="Ubicación de entrega">
+                <button type="submit">Confirmar</button>
+            </form>
+            <!-- Filtros de categorías -->
+            <div class="hero-categories" id="categorias" role="group" aria-label="Filtrar por categoría">
+                <button class="cat-btn" type="button" aria-pressed="false">
+                    <img src="https://img.icons8.com/color/48/000000/hamburger.png" alt="Burgers">Burgers
+                </button>
+                <button class="cat-btn" type="button" aria-pressed="false">
+                    <img src="https://img.icons8.com/color/48/000000/pizza.png" alt="Pizza">Pizza
+                </button>
+                <button class="cat-btn" type="button" aria-pressed="false">
+                    <img src="https://img.icons8.com/color/48/000000/sushi.png" alt="Sushi">Sushi
+                </button>
+                <button class="cat-btn" type="button" aria-pressed="false">
+                    <img src="https://img.icons8.com/color/48/000000/broccoli.png" alt="Vegano">Vegano
+                </button>
+                <button class="cat-btn" type="button" aria-pressed="false">
+                    <img src="https://img.icons8.com/color/48/000000/taco.png" alt="Mexicana">Mexicana
+                </button>
+            </div>
+        </div>
+    </header>
+    {% block contenido %}
+        <section id="destacados">
+            <h2>Restaurantes Destacados</h2>
+            <div class="cards-grid">
+                {% for destacado in restaurantes_destacados %}
+                <div class="card-restaurante">
+                    <img src="{{ destacado.imagen_url }}" alt="{{ destacado.nombre }}">
+                    <div class="card-body">
+                        <h3>{{ destacado.nombre }}</h3>
+                        <p>{{ destacado.tipo }} - {{ destacado.direccion }}</p>
+                        <div class="rating-bar-container">
+                            <div class="bar">
+                                <div class="bar-fill"
+                                    style="width: {{ destacado.valoracion_percent }}%; background: {{ destacado.media_valoracion|rating_color }}">
+                                </div>
+                            </div>
+                            <span>{{ destacado.media_valoracion }}/5</span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    {% endblock %}
+
+    <!-- Beneficios -->
+    <section class="benefits-section">
+        <h2>¿Por qué elegir TopMeal?</h2>
+        <div class="benefits-grid">
+            <div class="benefit-card">
+                <img src="https://img.icons8.com/color/96/000000/delivery.png" alt="Entrega rápida">
+                <h4>Entrega rápida</h4>
+                <p>Recibe tu pedido en minutos, seguimiento en tiempo real.</p>
+            </div>
+            <div class="benefit-card">
+                <img src="https://img.icons8.com/color/96/000000/restaurant-menu.png" alt="Reservas fáciles">
+                <h4>Reservas fáciles</h4>
+                <p>Reserva tu mesa en segundos, sin llamadas ni esperas.</p>
+            </div>
+            <div class="benefit-card">
+                <img src="https://img.icons8.com/color/96/000000/sale--v1.png" alt="Promociones">
+                <h4>Promociones</h4>
+                <p>Disfruta de descuentos exclusivos y menús especiales.</p>
+            </div>
+            <div class="benefit-card">
+                <img src="https://img.icons8.com/color/96/000000/online-support.png" alt="Atención 24/7">
+                <h4>Atención 24/7</h4>
+                <p>Soporte personalizado para resolver cualquier duda.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Opiniones Slider -->
+        <section id="destacados">
+            <h2>Opiniones</h2>
+            <div class="cards-grid opiniones-grid">
+                {% for opinion in opiniones %}
+                <div class="card-opinion">
+                    <h3>{{ opinion.restaurante }}</h3>
+                    <h4>{{ opinion.usuario }}</h4>
+                    <p>"{{ opinion.comentario }}"</p>
+                    <span class="opinion-rating">{{ opinion.puntuacion }}/5</span>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="contacto">
+        <div class="footer-main">
+            <div class="footer-logo">
+                <img src="{% static 'img/base/logo.png' %}" alt="TopMeal Logo">
+                <span>TopMeal</span>
+            </div>
+            <div class="footer-links">
+                <div>
+                    <h5>Colabora</h5>
+                    <a href="#">Repartidores</a>
+                    <a href="#">Trabaja con nosotros</a>
+                    <a href="#">Añade tu restaurante</a>
+                </div>
+                <div>
+                    <h5>Enlaces</h5>
+                    <a href="#">Acerca de nosotros</a>
+                    <a href="#">Contacto</a>
+                    <a href="#">Seguridad</a>
+                </div>
+                <div>
+                    <h5>Legal</h5>
+                    <a href="#">Cookies</a>
+                    <a href="#">Condiciones de uso</a>
+                    <a href="#">Privacidad</a>
+                </div>
+            </div>
+            <div class="footer-social">
+                <a href="#"><img src="{% static 'base/img/face.png' %}" alt="Facebook"></a>
+                <a href="#"><img src="{% static 'base/img/instagram.webp' %}" alt="Instagram"></a>
+                <a href="#"><img src="{% static 'base/img/youtube.png' %}" alt="YouTube"></a>
+            </div>
+        </div>
+        <div class="footer-copy">
+            &copy; 2024 TopMeal. Todos los derechos reservados.
+        </div>
+    </footer>
+    
+</body>
+</html>
