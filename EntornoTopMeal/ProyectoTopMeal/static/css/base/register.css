@@ -1,0 +1,120 @@
+:root {
+    --primary: #e63946;
+    --secondary: #f5e8d3;
+    --accent: #e9c46a;
+    --dark: #222;
+    --light: #fff;
+    --gray: #888;
+    --radius: 16px;
+    --shadow: 0 4px 18px 0 rgba(34,34,59,0.13);
+    --font-main: 'Montserrat', Arial, sans-serif;
+}
+
+body {
+    background: linear-gradient(180deg, #f5e8d3 0%, #fff 100%);
+    font-family: var(--font-main);
+}
+
+.register-container {
+    background: var(--light);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 38px 32px 28px 32px;
+    min-width: 340px;
+    max-width: 410px;
+    width: 100%;
+    margin: 32px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.register-container h2 {
+    color: var(--primary);
+    font-size: 2em;
+    font-weight: 800;
+    margin-bottom: 18px;
+}
+
+.register-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    background: #f9f6f2;
+    border-radius: 8px;
+    border: 1.5px solid var(--gray);
+    padding: 0 10px;
+    margin-bottom: 6px;
+    transition: border .18s;
+}
+
+.input-group:focus-within {
+    border-color: var(--primary);
+}
+
+.input-icon {
+    margin-right: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon img {
+    width: 22px;
+    height: 22px;
+    opacity: 0.7;
+}
+
+.register-form input {
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 1em;
+    padding: 13px 0;
+    width: 100%;
+    color: var(--dark);
+    font-family: var(--font-main);
+}
+
+.input-row {
+    display: flex;
+    gap: 10px;
+}
+
+.input-row .input-group {
+    flex: 1 1 0;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: var(--light);
+    border: none;
+    padding: 12px 0;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background .18s;
+    box-shadow: 0 2px 8px rgba(34,34,59,0.07);
+}
+
+.btn-primary:hover {
+    background: #b92d3a;
+}
+
+@media (max-width: 600px) {
+    .register-container {
+        min-width: unset;
+        max-width: 98vw;
+        padding: 18px 4vw 18px 4vw;
+    }
+    .input-row {
+        flex-direction: column;
+        gap: 0;
+    }
+}

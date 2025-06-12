@@ -1,15 +1,159 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Registrarse | TopMeal</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{% static 'img/base/logo.png' %}">
     <link rel="stylesheet" href="{% static 'css/base/inicio.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base/register.css' %}">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        body {
+            min-height: 100vh;
+            height: 100vh;
+            width: 100vw;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            /* Fondo igual que login: degradado vertical suave */
+            background: linear-gradient(180deg, #f5e8d3 0%, #fff 100%);
+        }
+        .main-no-scroll {
+            flex: 1 1 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 0;
+            height: 100%;
+            padding: 0;
+        }
+        .register-container {
+            width: 100%;
+            max-width: 410px;
+            min-width: 320px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 18px 0 rgba(34,34,59,0.13);
+            padding: 32px 24px 24px 24px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeInUp 0.7s cubic-bezier(.23,1.01,.32,1) both;
+        }
+        @media (max-width: 500px) {
+            .register-container {
+                max-width: 98vw;
+                min-width: unset;
+                padding: 18px 2vw 18px 2vw;
+            }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        .error-msg {
+            color: #e63946;
+            font-size: 0.95em;
+            margin: 2px 0 6px 36px;
+            min-height: 18px;
+            display: block;
+        }
+        .input-group {
+            position: relative;
+        }
+        .input-group.invalid input,
+        .input-group.invalid select {
+            border-color: #e63946 !important;
+        }
+        .input-group.valid input,
+        .input-group.valid select {
+            border-color: #22c55e !important;
+            background: #f6fff9;
+            transition: border-color 0.18s, background 0.18s;
+        }
+        .input-group .tick-icon {
+            display: none;
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 22px;
+            height: 22px;
+            pointer-events: none;
+        }
+        .input-group.valid .tick-icon {
+            display: block;
+        }
+        .input-group input,
+        .input-group select {
+            transition: border-color 0.18s, background 0.18s;
+            padding-right: 38px;
+        }
+        .show-hide-btn {
+            position: absolute;
+            right: 38px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0 4px;
+            color: #888;
+            font-size: 1.1em;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+        }
+        .show-hide-btn:focus {
+            outline: none;
+        }
+        .show-hide-btn svg {
+            width: 22px;
+            height: 22px;
+            opacity: 0.7;
+            display: block;
+        }
+        .show-hide-btn .hide-icon {
+            display: none;
+        }
+        .show-hide-btn.active .show-icon {
+            display: none;
+        }
+        .show-hide-btn.active .hide-icon {
+            display: block;
+        }
+        .success-msg {
+            color: #22c55e;
+            background: #f6fff9;
+            border: 1.5px solid #22c55e;
+            border-radius: 8px;
+            padding: 10px 0;
+            margin-bottom: 16px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.08em;
+            animation: fadeInSuccess 0.5s;
+        }
+        @keyframes fadeInSuccess {
+            from { opacity: 0; transform: scale(0.95);}
+            to { opacity: 1; transform: scale(1);}
+        }
+        .navbar {
+            flex-shrink: 0;
+        }
+    </style>
 </head>
-<body>
-    <nav class="navbar">
+<body style="background: linear-gradient(120deg, #e63946 0%, #f5e8d3 100%); min-height: 100vh; margin: 0;">
+        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1500&q=80') center/cover no-repeat; opacity: 0.18; z-index: 0;"></div>
+        <nav class="navbar" style="position: relative; z-index: 2;">
         <div class="navbar-logo">
             <img src="{% static 'img/base/logo.png' %}" alt="TopMeal Logo">
             <a href="{% url 'inicio' %}">
@@ -17,17 +161,85 @@
             </a>
         </div>
     </nav>
-    <main style="display:flex;justify-content:center;align-items:center;min-height:70vh;">
-        <div class="modal" style="position:static;box-shadow:none;">
-            <h2>Registrarse</h2>
-            <form class="modal-form">
-                <input type="text" placeholder="Nombre" required><br>
-                <input type="email" placeholder="Correo electrónico" required><br>
-                <input type="password" placeholder="Contraseña" required><br>
-                <button type="submit">Registrarse</button>
+    <main class="main-no-scroll" style="position: relative; z-index: 2;">
+        <div class="register-container">
+            <h2>Crear cuenta</h2>
+            {% if success_message %}
+                <div class="success-msg">{{ success_message }}</div>
+            {% endif %}
+            <form class="register-form" method="post" autocomplete="off" id="registerForm" novalidate action="">
+                {% csrf_token %}
+                {% if error_message %}
+                    <div class="error-msg" style="margin-bottom:12px;text-align:center;">{{ error_message }}</div>
+                {% endif %}
+                <div class="input-group" id="group-nombre">
+                    <span class="input-icon"><img src="{% static 'img/base/user.svg' %}" alt="icon"></span>
+                    <input type="text" name="nombre" id="nombre" placeholder="Nombre completo" maxlength="100" required>
+                    <img src="{% static 'img/base/tick.svg' %}" class="tick-icon" alt="Correcto">
+                </div>
+                <span class="error-msg" id="error-nombre"></span>
+                <div class="input-group" id="group-email">
+                    <span class="input-icon"><img src="{% static 'img/base/email.svg' %}" alt="icon"></span>
+                    <input type="email" name="email" id="email" placeholder="Correo electrónico" maxlength="254" required>
+                    <img src="{% static 'img/base/tick.svg' %}" class="tick-icon" alt="Correcto">
+                </div>
+                <span class="error-msg" id="error-email"></span>
+                <div class="input-group" id="group-contraseña">
+                    <span class="input-icon"><img src="{% static 'img/base/lock.svg' %}" alt="icon"></span>
+                    <input type="password" name="contraseña" id="contraseña" placeholder="Contraseña" maxlength="255" required>
+                    <button type="button" class="show-hide-btn" tabindex="-1" onclick="togglePassword('contraseña', this)">
+                        <span class="show-icon">
+                            <svg viewBox="0 0 20 20" fill="none"><path d="M2 10s3.5-5 8-5 8 5 8 5-3.5 5-8 5-8-5-8-5z" stroke="#888" stroke-width="2"/><circle cx="10" cy="10" r="2.5" stroke="#888" stroke-width="2"/></svg>
+                        </span>
+                        <span class="hide-icon">
+                            <svg viewBox="0 0 20 20" fill="none"><path d="M2 10s3.5-5 8-5 8 5 8 5-3.5 5-8 5-8-5-8-5z" stroke="#888" stroke-width="2"/><circle cx="10" cy="10" r="2.5" stroke="#888" stroke-width="2"/><line x1="4" y1="16" x2="16" y2="4" stroke="#888" stroke-width="2"/></svg>
+                        </span>
+                    </button>
+                    <img src="{% static 'img/base/tick.svg' %}" class="tick-icon" alt="Correcto">
+                </div>
+                <span class="error-msg" id="error-contraseña"></span>
+                <div class="input-group" id="group-confirmar_contraseña">
+                    <span class="input-icon"><img src="{% static 'img/base/lock.svg' %}" alt="icon"></span>
+                    <input type="password" name="confirmar_contraseña" id="confirmar_contraseña" placeholder="Confirmar contraseña" maxlength="255" required>
+                    <button type="button" class="show-hide-btn" tabindex="-1" onclick="togglePassword('confirmar_contraseña', this)">
+                        <span class="show-icon">
+                            <svg viewBox="0 0 20 20" fill="none"><path d="M2 10s3.5-5 8-5 8 5 8 5-3.5 5-8 5-8-5-8-5z" stroke="#888" stroke-width="2"/><circle cx="10" cy="10" r="2.5" stroke="#888" stroke-width="2"/></svg>
+                        </span>
+                        <span class="hide-icon">
+                            <svg viewBox="0 0 20 20" fill="none"><path d="M2 10s3.5-5 8-5 8 5 8 5-3.5 5-8 5-8-5-8-5z" stroke="#888" stroke-width="2"/><circle cx="10" cy="10" r="2.5" stroke="#888" stroke-width="2"/><line x1="4" y1="16" x2="16" y2="4" stroke="#888" stroke-width="2"/></svg>
+                        </span>
+                    </button>
+                    <img src="{% static 'img/base/tick.svg' %}" class="tick-icon" alt="Correcto">
+                </div>
+                <span class="error-msg" id="error-confirmar_contraseña"></span>
+                <div class="input-group" id="group-telefono">
+                    <span class="input-icon"><img src="{% static 'img/base/phone.svg' %}" alt="icon"></span>
+                    <input type="tel" name="telefono" id="telefono" placeholder="Teléfono" maxlength="20" required>
+                    <img src="{% static 'img/base/tick.svg' %}" class="tick-icon" alt="Correcto">
+                </div>
+                <span class="error-msg" id="error-telefono"></span>
+                <div class="input-group" id="group-direccion">
+                    <span class="input-icon"><img src="{% static 'img/base/address.svg' %}" alt="icon"></span>
+                    <input type="text" name="direccion" id="direccion" placeholder="Dirección" maxlength="100" required>
+                    <img src="{% static 'img/base/tick.svg' %}" class="tick-icon" alt="Correcto">
+                </div>
+                <span class="error-msg" id="error-direccion"></span>
+                <button type="submit" class="btn-primary" style="width:100%;margin-top:18px;" id="submitBtn" disabled>Registrarse</button>
             </form>
-            <p style="margin-top:16px;">¿Ya tienes cuenta? <a href="{% url 'login' %}" style="color:#e63946;">Inicia sesión</a></p>
+            <p style="margin-top:18px;">¿Ya tienes cuenta? <a href="{% url 'login' %}" style="color:#e63946;">Inicia sesión</a></p>
         </div>
     </main>
+    <script>
+    function togglePassword(inputId, btn) {
+        const input = document.getElementById(inputId);
+        btn.classList.toggle('active');
+        if (input.type === "password") {
+            input.type = "text";
+        } else {
+            input.type = "password";
+        }
+    }
+    </script>
+    <script src="{% static 'js/register-validation.js' %}"></script>
 </body>
 </html>

@@ -11,6 +11,30 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <script defer src="{% static 'base/js/interfaz.js' %}"></script>
     <link rel="icon" href="{% static 'img/base/logo.png' %}" type="image/x-icon">
+    <style>
+        /* Scrollbar personalizado */
+        ::-webkit-scrollbar {
+            width: 10px;
+            background: #f5e8d3;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #e63946 0%, #f5e8d3 100%);
+            border-radius: 8px;
+            border: 2px solid #fff;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #b92d3a 0%, #f5e8d3 100%);
+        }
+        ::-webkit-scrollbar-track {
+            background: #fff;
+            border-radius: 8px;
+        }
+        /* Firefox */
+        html {
+            scrollbar-color: #e63946 #f5e8d3;
+            scrollbar-width: thin;
+        }
+    </style>
 </head>
 <body>
     <!-- Sticky Navbar -->
@@ -36,11 +60,11 @@
     </nav>
 
     <!-- Hero Section -->
-    <header class="hero">
-        <div class="hero-bg"></div>
-        <div class="hero-content">
-            <h1>¡Descubre, reserva y disfruta!</h1>
-            <p class="hero-tagline">Tu comida favorita, en tu mesa o en tu restaurante preferido. <br>Explora cientos de opciones cerca de ti.</p>
+    <header class="hero" style="background: linear-gradient(120deg, #e63946 0%, #f5e8d3 100%); min-height: 70vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+        <div class="hero-bg" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('https://www.qarnal.es/wp-content/uploads/2023/09/comida-espanola.jpg') center/cover no-repeat; opacity: 0.18; z-index: 0;"></div>
+        <div class="hero-content" style="position: relative; z-index: 1; max-width: 700px; margin: 0 auto; padding: 60px 20px 40px 20px; text-align: center; color: #fff;">
+            <h1 style="font-size: 3.2em; font-weight: 900; color: #fff; background: none; margin-bottom: 18px; letter-spacing: 2px; text-shadow: 0 2px 12px #0005;">¡Descubre, reserva y disfruta!</h1>
+            <p class="hero-tagline" style="color: #fff; font-size: 1.4em; margin-bottom: 28px;">Tu comida favorita, en tu mesa o en tu restaurante preferido. <br>Explora cientos de opciones cerca de ti.</p>
             <!-- NUEVA barra de búsqueda de restaurantes -->
             <form class="restaurant-search-bar" autocomplete="off" role="search" aria-label="Buscar restaurantes por nombre" style="margin-bottom:18px;">
                 <input type="text" placeholder="Buscar restaurante por nombre" aria-label="Buscar restaurante por nombre">
@@ -48,10 +72,7 @@
                 <!-- El botón limpiar se añade por JS -->
             </form>
             <!-- Input de ubicación (solo ubicación, no búsqueda de restaurantes) -->
-            <form class="location-bar" autocomplete="off" role="form" aria-label="Ingresar ubicación" style="margin-bottom:18px;">
-                <input type="text" placeholder="¿A dónde enviamos tu comida?" aria-label="Ubicación de entrega">
-                <button type="submit">Confirmar</button>
-            </form>
+            
             <!-- Filtros de categorías -->
             <div class="hero-categories" id="categorias" role="group" aria-label="Filtrar por categoría">
                 <button class="cat-btn" type="button" aria-pressed="false">
@@ -166,10 +187,10 @@
                     <a href="#">Privacidad</a>
                 </div>
             </div>
-            <div class="footer-social">
-                <a href="#"><img src="{% static 'base/img/face.png' %}" alt="Facebook"></a>
-                <a href="#"><img src="{% static 'base/img/instagram.webp' %}" alt="Instagram"></a>
-                <a href="#"><img src="{% static 'base/img/youtube.png' %}" alt="YouTube"></a>
+            <div class="footer-social" style="background: #222; border-radius: 12px; padding: 18px 0; display: flex; justify-content: center; gap: 18px;">
+                <a href="#"><img src="https://img.icons8.com/color/48/000000/facebook-new.png" alt="Facebook"></a>
+                <a href="#"><img src="https://img.icons8.com/color/48/000000/instagram-new.png" alt="Instagram"></a>
+                <a href="#"><img src="https://img.icons8.com/color/48/000000/twitterx--v2.png" alt="X"></a>
             </div>
         </div>
         <div class="footer-copy">
