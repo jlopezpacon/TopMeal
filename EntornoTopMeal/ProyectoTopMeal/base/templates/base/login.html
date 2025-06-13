@@ -183,6 +183,17 @@
     </nav>
     <main class="main-no-scroll">
         <div class="login-container">
+            {% if request.GET.registro == "ok" %}
+            <div id="registro-exitoso" style="width:100%;background:#38b000;color:#fff;padding:14px 0 14px 0;border-radius:8px;margin-bottom:18px;text-align:center;font-size:1.1em;box-shadow:0 2px 12px #0002;">
+                ¡Te has registrado correctamente! Ahora puedes iniciar sesión.
+            </div>
+            <script>
+                setTimeout(function() {
+                    var msg = document.getElementById('registro-exitoso');
+                    if(msg) msg.style.display = 'none';
+                }, 3500);
+            </script>
+            {% endif %}
             <h2>Iniciar Sesión</h2>
             <form class="register-form" method="post" autocomplete="off" id="loginForm" novalidate>
                 {% csrf_token %}

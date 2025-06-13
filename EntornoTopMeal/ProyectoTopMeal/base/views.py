@@ -17,6 +17,8 @@ class InicioListView(ListView):
         context['restaurantes_destacados'] = Restaurantes.objects.order_by('-media_valoracion')[:3]
         opiniones = list(Opiniones.objects.all())
         context['opiniones'] = random.sample(opiniones, min(3, len(opiniones)))
+        # Añade el nombre del usuario si está en sesión
+        context['usuario_nombre'] = self.request.session.get('usuario_nombre')
         return context
     
 
@@ -53,8 +55,51 @@ class Register(TemplateView):
             tarjeta='', cad_tarjeta='', cvv_tarjeta=''  # Si tu modelo requiere estos campos
         )
         usuario.save()
-        return redirect('login')
+        # Redirigir a login con parámetro de éxito
+        return redirect('/login/?registro=ok')
     
+
+# base/views.py
+from django.views.generic import TemplateView
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import Usuarios
+from .forms import LoginForm
 
 class Login(TemplateView):
     template_name = "base/login.html"
+
+    def get(self, request, *args, **kwargs):
+        form = LoginForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            contraseña = form.cleaned_data['contraseña']
+            try:
+                usuario = Usuarios.objects.get(email=email)
+                if usuario.contraseña == contraseña:  # ⚠️ Inseguro (usa hash en producción)
+                    request.session['usuario_id'] = usuario.id
+                    request.session['usuario_nombre'] = usuario.nombre
+                    messages.success(request, f"¡Bienvenido/a, {usuario.nombre}!")
+                    return redirect('inicio')
+                else:
+                    messages.error(request, "Contraseña incorrecta")
+            except Usuarios.DoesNotExist:
+                messages.error(request, "Usuario no encontrado")
+        return render(request, self.template_name, {'form': form})
+
+def logout_view(request):
+    request.session.flush()
+    return redirect('inicio')
+
+class AcercaView(TemplateView):
+    template_name = "base/acerca.html"
+
+class ContactoView(TemplateView):
+    template_name = "base/contacto.html"
+
+class LegalesView(TemplateView):
+    template_name = "base/legales.html"

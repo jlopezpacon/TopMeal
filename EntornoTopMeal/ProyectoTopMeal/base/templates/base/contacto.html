@@ -1,0 +1,334 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto | TopMeal</title>
+    <link rel="stylesheet" href="{% static 'css/base/inicio.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="{% static 'img/base/logo.png' %}" type="image/x-icon">
+    <style>
+        /* Scrollbar personalizado */
+        ::-webkit-scrollbar {
+            width: 10px;
+            background: #f5e8d3;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #e63946 0%, #f5e8d3 100%);
+            border-radius: 8px;
+            border: 2px solid #fff;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #b92d3a 0%, #f5e8d3 100%);
+        }
+        ::-webkit-scrollbar-track {
+            background: #fff;
+            border-radius: 8px;
+        }
+        /* Firefox */
+        html {
+            scrollbar-color: #e63946 #f5e8d3;
+            scrollbar-width: thin;
+            scroll-behavior: smooth; /* Scroll suave */
+        }
+        body {
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Montserrat', 'Roboto', sans-serif;
+            position: relative;
+            background: linear-gradient(120deg, #e63946 0%, #f5e8d3 100%);
+            overflow-x: hidden;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .bg-circle {
+            position: fixed;
+            border-radius: 50%;
+            z-index: 0;
+            filter: blur(8px);
+            opacity: 0.18;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .bg-circle1 {
+            width: 420px; height: 420px;
+            background: radial-gradient(circle at 30% 30%, #e63946 60%, #f5e8d3 100%);
+            top: -120px; left: -120px;
+        }
+        .bg-circle2 {
+            width: 320px; height: 320px;
+            background: radial-gradient(circle at 70% 70%, #f5e8d3 60%, #e63946 100%);
+            bottom: -100px; right: -100px;
+        }
+        .bg-circle3 {
+            width: 180px; height: 180px;
+            background: radial-gradient(circle at 50% 50%, #fff 60%, #e63946 100%);
+            top: 60vh; left: -60px;
+        }
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            padding: 0 18px;
+            z-index: 2;
+            position: relative;
+            background: #fff;
+            box-shadow: 0 2px 12px #0001;
+        }
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .contact-hero {
+            background: transparent;
+            min-height: 40vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            z-index: 2;
+        }
+        .contact-hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 60px 20px 40px 20px;
+            text-align: center;
+            color: #fff;
+            background: rgba(230,57,70,0.82);
+            border-radius: 24px;
+            box-shadow: 0 4px 32px #0002;
+            backdrop-filter: blur(2px);
+        }
+        .contact-section {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 18px 0 rgba(34,34,59,0.13);
+            max-width: 800px;
+            margin: -60px auto 40px auto;
+            padding: 38px 28px 32px 28px;
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+        .contact-section h2 {
+            color: #e63946;
+            font-size: 2.2em;
+            margin-bottom: 18px;
+            font-weight: 800;
+        }
+        .contact-section p {
+            color: #222;
+            font-size: 1.18em;
+            margin-bottom: 18px;
+            line-height: 1.7;
+        }
+        .contact-email {
+            font-size: 1.3em;
+            color: #e63946;
+            font-weight: 700;
+            background: #f5e8d3;
+            padding: 14px 28px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            margin-top: 18px;
+            letter-spacing: 1px;
+            gap: 10px;
+        }
+        .contact-email img {
+            width: 28px;
+            height: 28px;
+            vertical-align: middle;
+            opacity: 0.7;
+            margin: 0;
+        }
+        .contact-email a {
+            color: #e63946;
+            text-decoration: none;
+            font-size: 1em;
+            vertical-align: middle;
+        }
+        .copied-msg {
+            display: none;
+            position: fixed;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #38b000;
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px #0002;
+            z-index: 9999;
+            font-size: 1.1em;
+            font-weight: 600;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s cubic-bezier(.4,0,.2,1);
+            /* Animación personalizada */
+        }
+        .copied-msg.show {
+            display: block;
+            opacity: 1;
+            pointer-events: auto;
+            animation: fadeInCorreo 0.4s cubic-bezier(.4,0,.2,1);
+        }
+        .copied-msg.hide {
+            opacity: 0;
+            transition: opacity 0.4s cubic-bezier(.4,0,.2,1);
+            animation: fadeOutCorreo 0.4s cubic-bezier(.4,0,.2,1);
+        }
+        @keyframes fadeInCorreo {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px);}
+            to   { opacity: 1; transform: translateX(-50%) translateY(0);}
+        }
+        @keyframes fadeOutCorreo {
+            from { opacity: 1; transform: translateX(-50%) translateY(0);}
+            to   { opacity: 0; transform: translateX(-50%) translateY(-20px);}
+        }
+        @media (max-width: 900px) {
+            .contact-section {
+                max-width: 98vw;
+                margin: -30px 8px 24px 8px;
+                padding: 18px 8px 18px 8px;
+            }
+        }
+        @media (max-width: 700px) {
+            .contact-section {
+                max-width: 100vw;
+                margin: -20px 2vw 18px 2vw;
+                padding: 12px 2vw 12px 2vw;
+            }
+            .contact-hero-content {
+                padding: 30px 8px 20px 8px;
+            }
+            .bg-circle1, .bg-circle2, .bg-circle3 {
+                display: none;
+            }
+            .contact-email {
+                flex-direction: column;
+                gap: 6px;
+                font-size: 1.1em;
+                padding: 10px 10px;
+            }
+        }
+        @media (max-width: 500px) {
+            .contact-hero-content h1 {
+                font-size: 2em !important;
+            }
+            .contact-hero-content p {
+                font-size: 1em !important;
+            }
+            .contact-section {
+                padding: 8px 2vw 8px 2vw;
+            }
+        }
+        .footer {
+            margin-top: auto;
+        }
+    </style>
+    <script>
+        function copiarCorreo() {
+            const correo = "topmealtfg@gmail.com";
+            navigator.clipboard.writeText(correo).then(function() {
+                var msg = document.getElementById('copied-msg');
+                msg.classList.remove('hide');
+                msg.classList.add('show');
+                msg.style.display = 'block';
+                setTimeout(function() {
+                    msg.classList.remove('show');
+                    msg.classList.add('hide');
+                    setTimeout(function() {
+                        msg.style.display = 'none';
+                        msg.classList.remove('hide');
+                    }, 400);
+                }, 1800);
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="bg-circle bg-circle1"></div>
+    <div class="bg-circle bg-circle2"></div>
+    <div class="bg-circle bg-circle3"></div>
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <img src="{% static 'img/base/logo.png' %}" alt="TopMeal Logo">
+            <a href="{% url 'inicio' %}">
+                <span>TopMeal</span>
+            </a>
+        </div>
+        <div class="navbar-actions">
+            <a href="{% url 'inicio' %}" class="btn-outline">Inicio</a>
+        </div>
+    </nav>
+    <section class="contact-hero">
+        <div class="contact-hero-content">
+            <h1 style="font-size:2.8em;font-weight:900;letter-spacing:2px;text-shadow:0 2px 12px #0005;">Contacto</h1>
+            <p style="font-size:1.3em;margin-top:18px;">¿Tienes alguna pregunta o sugerencia? ¡Estamos aquí para ayudarte!</p>
+        </div>
+    </section>
+    <section class="contact-section">
+        <h2>¿Cómo puedes contactar con nosotros?</h2>
+        <p>
+            Puedes escribirnos a nuestro correo electrónico y te responderemos lo antes posible.
+        </p>
+        <div class="contact-email">
+            <img src="{% static 'img/base/email.svg' %}" alt="Email">
+            <span onclick="copiarCorreo()" style="cursor:pointer;user-select:all;">
+                topmealtfg@gmail.com
+            </span>
+        </div>
+        <div id="copied-msg" class="copied-msg">¡Correo copiado!</div>
+    </section>
+    <footer class="footer" id="contacto">
+        <div class="footer-main">
+            <div class="footer-logo">
+                <img src="{% static 'img/base/logo.png' %}" alt="TopMeal Logo">
+                <span>TopMeal</span>
+            </div>
+            <div class="footer-links">
+                <div>
+                    <h5>Colabora</h5>
+                    <a href="#">Repartidores</a>
+                    <a href="#">Trabaja con nosotros</a>
+                    <a href="#">Añade tu restaurante</a>
+                </div>
+                <div>
+                    <h5>Enlaces</h5>
+                    <a href="{% url 'acerca' %}">Acerca de nosotros</a>
+                    <a href="{% url 'contacto' %}">Contacto</a>
+                    <!-- <a href="#">Seguridad</a> -->
+                </div>
+                <div>
+                    <h5>Legal</h5>
+                    <a href="{% url 'legales' %}">Cookies</a>
+                    <a href="{% url 'legales' %}">Condiciones de uso</a>
+                    <a href="{% url 'legales' %}">Privacidad</a>
+                </div>
+            </div>
+            <div class="footer-social" style="background: #222; border-radius: 12px; padding: 18px 0; display: flex; justify-content: center; gap: 18px;">
+                <a href="#"><img src="https://img.icons8.com/color/48/000000/facebook-new.png" alt="Facebook"></a>
+                <a href="#"><img src="https://img.icons8.com/color/48/000000/instagram-new.png" alt="Instagram"></a>
+                <a href="#"><img src="https://img.icons8.com/color/48/000000/twitterx--v2.png" alt="X"></a>
+            </div>
+        </div>
+        <div class="footer-copy">
+            &copy; 2025 TopMeal. Todos los derechos reservados.
+        </div>
+    </footer>
+</body>
+</html>

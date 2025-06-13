@@ -33,30 +33,146 @@
         html {
             scrollbar-color: #e63946 #f5e8d3;
             scrollbar-width: thin;
+            scroll-behavior: smooth; /* Scroll suave */
+        }
+        @media (max-width: 700px) {
+            .navbar-logo {
+                display: none !important;
+            }
+            .navbar-actions {
+                flex: 1 1 100%;
+                justify-content: flex-end;
+            }
+            .hero-content {
+                padding: 30px 8px 20px 8px !important;
+                max-width: 98vw !important;
+            }
+            .cards-grid,
+            .opiniones-grid,
+            .benefits-grid {
+                grid-template-columns: 1fr !important;
+                gap: 36px !important; /* Más espacio entre cards */
+            }
+            .card-restaurante,
+            .card-opinion,
+            .benefit-card {
+                min-width: 0 !important;
+                width: 100% !important;
+            }
+            .card-restaurante {
+                margin-bottom: 24px !important; /* Más espacio entre cards de restaurantes */
+                min-height: 340px !important;   /* Más altura para las cards de restaurantes */
+            }
+            .footer-main {
+                flex-direction: column !important;
+                align-items: center !important;
+                gap: 18px !important;
+                text-align: center !important;
+            }
+            .footer-links {
+                flex-direction: column !important;
+                gap: 10px !important;
+                align-items: center !important;
+                text-align: center !important;
+            }
+        }
+        @media (max-width: 500px) {
+            .hero-content h1 {
+                font-size: 2em !important;
+            }
+            .hero-content p,
+            .hero-content .hero-tagline {
+                font-size: 1em !important;
+            }
+            .footer-main {
+                padding: 10px !important;
+            }
+        }
+        /* Asegura que navbar sea flexible y responsive */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .bienvenida-msg {
+            position:fixed;
+            top:30px;
+            left:50%;
+            transform:translateX(-50%);
+            background:#38b000;
+            color:#fff;
+            padding:18px 32px;
+            border-radius:8px;
+            box-shadow:0 2px 12px #0002;
+            z-index:9999;
+            font-size:1.2em;
+            opacity: 0;
+            animation: bienvenida-fadein 0.4s cubic-bezier(.4,0,.2,1) forwards;
+            transition: opacity 0.4s cubic-bezier(.4,0,.2,1);
+        }
+        .bienvenida-hide {
+            opacity: 0 !important;
+            animation: bienvenida-fadeout 0.4s cubic-bezier(.4,0,.2,1) forwards;
+        }
+        @keyframes bienvenida-fadein {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px);}
+            to   { opacity: 1; transform: translateX(-50%) translateY(0);}
+        }
+        @keyframes bienvenida-fadeout {
+            from { opacity: 1; transform: translateX(-50%) translateY(0);}
+            to   { opacity: 0; transform: translateX(-50%) translateY(-20px);}
         }
     </style>
 </head>
 <body>
+    {% if messages %}
+        {% for message in messages %}
+            <div id="bienvenida-msg" class="bienvenida-msg">{{ message }}</div>
+            <script>
+                setTimeout(function() {
+                    var msg = document.getElementById('bienvenida-msg');
+                    if(msg) {
+                        msg.classList.add('bienvenida-hide');
+                        setTimeout(function() {
+                            msg.style.display = 'none';
+                        }, 400);
+                    }
+                }, 3500);
+            </script>
+        {% endfor %}
+    {% endif %}
     <!-- Sticky Navbar -->
     <nav class="navbar">
         <div class="navbar-logo">
-            
             <img src="{% static 'img/base/logo.png' %}" alt="TopMeal Logo">
-            
             <a href="{% url 'inicio' %}">
                 <span>TopMeal</span>
             </a>
-            
-            
         </div>
-        
         <div class="navbar-actions">
-            <a href="{% url 'register' %}" class="btn-outline">Registrarse</a>
-            <a href="{% url 'login' %}" class="btn-primary">Iniciar Sesión</a>
+            {% if usuario_nombre %}
+                <div style="display:flex;align-items:center;gap:14px;">
+                    <span style="font-weight:600;padding:7px 18px;background:#f5e8d3;color:#e63946;border-radius:20px;font-size:1em;box-shadow:0 1px 6px #0001;display:flex;align-items:center;">
+                        <span style="vertical-align:middle;">{{ usuario_nombre }}</span>
+                    </span>
+                    <a href="{% url 'logout' %}" class="btn-outline" style="background:#e63946;color:#fff;border:none;">Cerrar sesión</a>
+                </div>
+            {% else %}
+                <a href="{% url 'register' %}" class="btn-outline">Registrarse</a>
+                <a href="{% url 'login' %}" class="btn-primary">Iniciar Sesión</a>
+            {% endif %}
         </div>
-        <button class="navbar-toggle" aria-label="Abrir menú">
-            <span></span><span></span><span></span>
-        </button>
     </nav>
 
     <!-- Hero Section -->
@@ -176,15 +292,15 @@
                 </div>
                 <div>
                     <h5>Enlaces</h5>
-                    <a href="#">Acerca de nosotros</a>
-                    <a href="#">Contacto</a>
-                    <a href="#">Seguridad</a>
-                </div>
+                    <a href="{% url 'acerca' %}">Acerca de nosotros</a>
+                    <a href="{% url 'contacto' %}">Contacto</a>
+                    <!-- <a href="#">Seguridad</a> -->
+                </div> 
                 <div>
                     <h5>Legal</h5>
-                    <a href="#">Cookies</a>
-                    <a href="#">Condiciones de uso</a>
-                    <a href="#">Privacidad</a>
+                    <a href="{% url 'legales' %}">Cookies</a>
+                    <a href="{% url 'legales' %}">Condiciones de uso</a>
+                    <a href="{% url 'legales' %}">Privacidad</a>
                 </div>
             </div>
             <div class="footer-social" style="background: #222; border-radius: 12px; padding: 18px 0; display: flex; justify-content: center; gap: 18px;">
@@ -194,7 +310,7 @@
             </div>
         </div>
         <div class="footer-copy">
-            &copy; 2024 TopMeal. Todos los derechos reservados.
+            &copy; 2025 TopMeal. Todos los derechos reservados.
         </div>
     </footer>
     
