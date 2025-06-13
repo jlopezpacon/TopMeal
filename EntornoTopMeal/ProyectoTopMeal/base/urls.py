@@ -1,6 +1,6 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from .views import InicioListView, Register, Login, logout_view, AcercaView, ContactoView, LegalesView
+from .views import InicioListView, Register, Login, logout_view, AcercaView, ContactoView, LegalesView, RestauranteDetailView
 from . import views
 
 from .views import Login
@@ -13,4 +13,6 @@ urlpatterns = [
     path('acerca/', AcercaView.as_view(), name='acerca'),
     path('contacto/', ContactoView.as_view(), name='contacto'),
     path('legales/', LegalesView.as_view(), name='legales'),
+    path('restaurante/<int:pk>/', RestauranteDetailView.as_view(), name='restaurante_detail'),
+    path('api/reservar/<int:restaurante_id>/', views.api_reservar, name='api_reservar'),
 ]

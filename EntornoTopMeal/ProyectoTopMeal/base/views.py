@@ -4,6 +4,12 @@ import random
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Usuarios
+from django.views.generic.detail import DetailView
+from .models import Restaurantes , Menu , Opiniones
+from django.http import JsonResponse
+from .models import Reservas
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 
 # Create your views here.
@@ -17,8 +23,6 @@ class InicioListView(ListView):
         context['restaurantes_destacados'] = Restaurantes.objects.order_by('-media_valoracion')[:3]
         opiniones = list(Opiniones.objects.all())
         context['opiniones'] = random.sample(opiniones, min(3, len(opiniones)))
-        # Añade el nombre del usuario si está en sesión
-        context['usuario_nombre'] = self.request.session.get('usuario_nombre')
         return context
     
 
@@ -103,3 +107,41 @@ class ContactoView(TemplateView):
 
 class LegalesView(TemplateView):
     template_name = "base/legales.html"
+
+class RestauranteDetailView(DetailView):
+    model = Restaurantes
+    template_name = "base/restaurante_detail.html"
+    context_object_name = "restaurante"
+
+    def get_context_data(self, **kwargs):
+            context = super().get_context_data(**kwargs)
+            context['menu'] = Menu.objects.filter(restaurante_id=self.object.id).first()
+            return context
+
+@csrf_exempt
+def api_reservar(request, restaurante_id):
+    if request.method == "POST":
+        if not request.session.get('usuario_id'):
+            return JsonResponse({'success': False, 'error': 'Debes iniciar sesión.'})
+        body = json.loads(request.body)
+        fecha = body.get('fecha')
+        hora = body.get('hora')
+        numero_personas = body.get('numero_personas')
+        usuario_id = request.session.get('usuario_id')
+        # Comprobar si ya existe reserva para ese día/hora/restaurante
+        existe = Reservas.objects.filter(
+            restaurante_id=restaurante_id,
+            fecha=fecha,
+            hora=hora
+        ).exists()
+        if existe:
+            return JsonResponse({'success': False, 'error': 'Esa hora ya está reservada.'})
+        Reservas.objects.create(
+            usuario_id=usuario_id,
+            restaurante_id=restaurante_id,
+            fecha=fecha,
+            hora=hora,
+            numero_personas=numero_personas
+        )
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'error': 'Método no permitido'})

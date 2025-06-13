@@ -217,7 +217,11 @@
                 <div class="card-restaurante">
                     <img src="{{ destacado.imagen_url }}" alt="{{ destacado.nombre }}">
                     <div class="card-body">
-                        <h3>{{ destacado.nombre }}</h3>
+                        <h3>
+                            <a href="{% url 'restaurante_detail' destacado.id %}" style="color:#e63946;text-decoration:none;">
+                                {{ destacado.nombre }}
+                            </a>
+                        </h3>
                         <p>{{ destacado.tipo }} - {{ destacado.direccion }}</p>
                         <div class="rating-bar-container">
                             <div class="bar">
