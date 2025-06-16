@@ -1,0 +1,48 @@
+# Entorno virtual de Python
+EntornoTopMeal/Lib/
+EntornoTopMeal/Scripts/
+EntornoTopMeal/include/
+EntornoTopMeal/pyvenv.cfg
+
+# Archivos de configuración y claves
+.env
+*.env
+*.secret
+*.key
+
+# Archivos de base de datos
+*.sqlite3
+db.sqlite3
+
+# Archivos de caché y temporales
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+*.tmp
+*.swp
+*.bak
+
+# Archivos de Stripe (no subas claves ni archivos de configuración)
+stripe.log
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de VSCode
+.vscode/
+
+# Otros
+*.egg-info/
+*.egg
+*.tar.gz
+*.zip
+*.tgz
+
+# Node/npm (si usas)
+node_modules/
+
+# Archivos de migraciones (opcional, si no quieres subirlas)
+# EntornoTopMeal/ProyectoTopMeal/base/migrations/
