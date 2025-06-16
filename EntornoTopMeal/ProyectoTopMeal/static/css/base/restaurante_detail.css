@@ -518,6 +518,186 @@ body {
     margin-top: 18px;
     padding-bottom: 18px;
 }
+
+/* Card Restaurante - Diseño creativo y moderno */
+.card-restaurante {
+    background: linear-gradient(135deg, #fff 60%, #f5e8d3 100%);
+    border-radius: 22px;
+    box-shadow: 0 8px 32px #e6394615, 0 2px 8px #e6394622;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    transition: transform 0.22s cubic-bezier(.4,0,.2,1), box-shadow 0.22s cubic-bezier(.4,0,.2,1);
+    min-width: 280px;
+    max-width: 370px;
+    margin: 0 auto 28px auto;
+    border: 2.5px solid var(--accent);
+    position: relative;
+}
+
+.card-restaurante:hover {
+    transform: translateY(-10px) scale(1.04) rotate(-1deg);
+    box-shadow: 0 16px 40px #e6394630, 0 2px 8px #e6394622;
+    border-color: var(--primary);
+}
+
+.card-restaurante img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-top-left-radius: 22px;
+    border-top-right-radius: 22px;
+    border-bottom: 3px solid var(--accent);
+    box-shadow: 0 4px 18px #e6394610;
+    transition: filter 0.2s;
+}
+
+.card-restaurante:hover img {
+    filter: brightness(0.95) saturate(1.1);
+}
+
+.card-restaurante .card-body {
+    padding: 22px 20px 18px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    flex: 1 1 auto;
+    background: transparent;
+}
+
+.card-restaurante h3 {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 2px;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 8px #e6394610;
+    transition: color 0.18s;
+}
+
+.card-restaurante:hover h3 {
+    color: var(--accent);
+}
+
+.card-restaurante .tipo-direccion {
+    font-size: 1.02em;
+    color: #444;
+    margin-bottom: 8px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-restaurante .tipo-direccion svg {
+    width: 18px;
+    height: 18px;
+    color: var(--primary);
+    opacity: 0.7;
+}
+
+.card-restaurante .rating-bar-container {
+    width: 100%;
+    max-width: 160px;
+    margin: 10px 0 0 0;
+    height: 16px;
+    background: #f5e8d3;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 8px #e6394610;
+}
+
+.card-restaurante .bar {
+    width: 100%;
+    height: 100%;
+    background: #ececec;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.card-restaurante .bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #e63946 0%, #e9c46a 80%);
+    border-radius: 8px;
+    transition: width 0.3s;
+}
+
+.card-restaurante .rating-value {
+    font-size: 1.08em;
+    font-weight: 700;
+    color: #e63946;
+    margin-left: 10px;
+    background: #fffbe6;
+    border-radius: 6px;
+    padding: 2px 10px;
+    box-shadow: 0 1px 4px #e9c46a22;
+}
+
+.card-restaurante .btn-ver {
+    margin-top: 14px;
+    background: linear-gradient(90deg, #e63946 70%, #e9c46a 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 22px;
+    font-weight: 700;
+    font-size: 1em;
+    box-shadow: 0 2px 8px #e6394610;
+    cursor: pointer;
+    transition: background 0.18s, transform 0.18s;
+    letter-spacing: 1px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.card-restaurante .btn-ver:hover {
+    background: linear-gradient(90deg, #b92d3a 70%, #e9c46a 100%);
+    transform: scale(1.04);
+}
+
+/* Etiqueta destacada */
+.card-restaurante .destacado-label {
+    position: absolute;
+    top: 16px;
+    right: -32px;
+    background: linear-gradient(90deg, #e9c46a 60%, #e63946 100%);
+    color: #fff;
+    font-size: 0.98em;
+    font-weight: 700;
+    padding: 7px 32px 7px 18px;
+    border-radius: 0 18px 18px 0;
+    box-shadow: 0 2px 8px #e6394610;
+    transform: rotate(18deg);
+    letter-spacing: 1px;
+    z-index: 2;
+    text-shadow: 0 2px 8px #e6394610;
+}
+
+@media (max-width: 900px) {
+    .card-restaurante {
+        min-width: 180px;
+        max-width: 98vw;
+    }
+    .card-restaurante img {
+        height: 120px;
+    }
+}
+
+@media (max-width: 700px) {
+    .card-restaurante {
+        width: 98vw;
+        min-width: unset;
+        max-width: 98vw;
+    }
+    .card-restaurante img {
+        height: 90px;
+    }
+}
+
 /* Responsive */
 @media (max-width: 1100px) {
     .footer-main { flex-direction: column; align-items: center; gap: 24px; }

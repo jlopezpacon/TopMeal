@@ -156,3 +156,7 @@ SIMPLE_JWT = {
     'ALGORITHM': 'HS256',                           # Algoritmo de cifrado
     'SIGNING_KEY': SECRET_KEY,
 }
+
+# Stripe
+STRIPE_PUBLIC_KEY = "pk_test_51Rahzg02ppnYxzNqJKYLy79NfKo8FeQsW76Wql31b3mNObfojovkzBdJXs0a3QHJoxpKwxORG7S9zgD1puZoRSvg00fZhOyTLr"
+STRIPE_SECRET_KEY = "REMOVED_STRIPE_SECRET_KEY"

@@ -1,0 +1,691 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pedir a domicilio | {{ restaurante.nombre }} | TopMeal</title>
+    <link rel="stylesheet" href="{% static 'css/base/restaurante_detail.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="{% static 'img/base/logo.png' %}" type="image/x-icon">
+    <style>
+        /* Solo para asegurar fondo general igual que restaurante_detail.html */
+        html, body {
+            height: 100%;
+        }
+        body {
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Montserrat', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #f5e8d3 0%, #fff 100%);
+            color: #222;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        /* Copia exacta de la hero-section y hero-bg-img de restaurante_detail.html */
+        .hero-section {
+            width: 100vw;
+            min-height: 340px;
+            background: linear-gradient(120deg, #e63946 60%, #e9c46a 100%);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px #e6394615, 0 2px 8px #e6394622;
+            margin-bottom: 54px; /* MÁS ESPACIO debajo del hero */
+        }
+        .hero-bg-img {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1500&q=80') center/cover no-repeat;
+            opacity: 0.13;
+            z-index: 0;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 48px;
+            padding: 64px 32px 48px 32px;
+        }
+        .hero-info {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .hero-info h1 {
+            font-size: 3em;
+            font-weight: 900;
+            margin: 0 0 10px 0;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 12px #0005;
+        }
+        .hero-info .details {
+            font-size: 1.2em;
+            margin-bottom: 18px;
+            color: #fffbe6;
+        }
+        .hero-info .rating {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #e9c46a;
+            margin-bottom: 8px;
+        }
+        .hero-img {
+            flex: 1.2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hero-img img {
+            width: 320px;
+            height: 320px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 7px solid #fffbe6;
+            box-shadow: 0 8px 32px #e6394620, 0 2px 8px #2222;
+            background: #fff;
+        }
+        @media (max-width: 900px) {
+            .hero-content { flex-direction: column; gap: 24px; padding: 32px 8px 24px 8px; }
+        }
+        @media (max-width: 700px) {
+            .hero-section { min-height: 180px; }
+            .hero-content { flex-direction: column; gap: 10px; padding: 12px 2vw 12px 2vw; }
+            .hero-img img { width: 120px; height: 120px; }
+        }
+        @media (max-width: 500px) {
+            .hero-content { padding: 6px 2vw 6px 2vw; }
+            .hero-info h1 { font-size: 1.5em; }
+            .hero-info .details { font-size: 1em; }
+            .hero-info .rating { font-size: 1.1em; }
+        }
+        .footer {
+            margin-top: auto !important;
+        }
+        /* CONTENIDO PRINCIPAL: Menú y Carrito/Resumen */
+        .main-content-grid {
+            display: grid;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 38px;
+            max-width: 1100px;
+            margin: 0 auto 38px auto;
+            align-items: flex-start;
+            padding: 0 12px;
+            margin-top: 0; /* El margen lo da el hero-section ahora */
+        }
+        .menu-lateral {
+            background: none;
+            padding: 0 0 0 0;
+        }
+        .menu-titulo {
+            font-size: 2em;
+            font-weight: 900;
+            color: #222;
+            margin-bottom: 18px;
+        }
+        .menu-preestablecido {
+            margin-bottom: 18px;
+        }
+        .menu-pre-card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px #0001;
+            padding: 16px 18px 12px 18px;
+            border: 1.5px solid #e0e0e0;
+            margin-bottom: 8px;
+        }
+        .menu-pre-nombre {
+            font-weight: 700;
+            font-size: 1.1em;
+            margin-bottom: 2px;
+        }
+        .menu-pre-precio {
+            color: #e63946;
+            font-weight: 700;
+            font-size: 1.05em;
+            margin-bottom: 2px;
+        }
+        .menu-pre-porpersona {
+            color: #888;
+            font-size: 0.95em;
+            font-weight: 400;
+            margin-left: 4px;
+        }
+        .menu-pre-desc {
+            color: #444;
+            font-size: 0.98em;
+            margin-top: 2px;
+        }
+        .menu-lista-tipos {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .menu-tipo {
+            margin-bottom: 0;
+        }
+        .menu-tipo-titulo {
+            color: #222;
+            font-size: 1.15em;
+            font-weight: 800;
+            margin-bottom: 6px;
+            margin-top: 12px;
+        }
+        .menu-productos {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+        .menu-producto {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 1.05em;
+            gap: 8px;
+        }
+        .menu-prod-nombre {
+            flex: 1;
+            color: #222;
+            font-weight: 500;
+            text-align: left;
+            font-size: 1em;
+        }
+        .menu-prod-precio {
+            color: #222;
+            font-weight: 600;
+            min-width: 70px;
+            text-align: right;
+            font-size: 1em;
+            margin-left: 12px;
+        }
+        .menu-prod-add {
+            background: #e63946;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            width: 32px;
+            height: 32px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background 0.18s;
+            box-shadow: 0 1px 4px #e6394610;
+        }
+        .menu-prod-add:hover {
+            background: #b92d3a;
+        }
+        /* Carrito lateral */
+        .carrito-lateral {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            min-width: 260px;
+            max-width: 340px;
+        }
+        .carrito-bloque {
+            background: #e63946;
+            border-radius: 8px;
+            padding: 22px 22px 12px 22px;
+            color: #fff;
+            margin-bottom: 0;
+        }
+        .carrito-titulo {
+            color: #fff;
+            font-size: 1.2em;
+            font-weight: 800;
+            margin-bottom: 14px;
+        }
+        .carrito-lista {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 0 0;
+        }
+        .carrito-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 7px 0;
+            font-size: 1.05em;
+        }
+        .carrito-item-nombre {
+            flex: 1;
+            color: #fff;
+            font-weight: 600;
+            text-align: left;
+        }
+        .carrito-item-precio {
+            color: #fff;
+            font-weight: 600;
+            min-width: 70px;
+            text-align: right;
+        }
+        .carrito-cantidad-btn {
+            background: #fff;
+            color: #e63946;
+            border: none;
+            border-radius: 16px;
+            width: 28px;
+            height: 28px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 0 2px;
+            transition: background 0.18s, color 0.18s;
+        }
+        .carrito-cantidad-btn:hover {
+            background: #e9c46a;
+            color: #fff;
+        }
+        .carrito-item-cantidad {
+            color: #fff;
+            font-weight: 700;
+            min-width: 28px;
+            text-align: center;
+        }
+        .carrito-vacio {
+            color: #fff;
+            margin: 18px 0 0 0;
+            text-align: left;
+            font-size: 1em;
+        }
+        /* Resumen */
+        .resumen-bloque {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px #0002;
+            padding: 24px 24px 24px 24px;
+            min-width: 220px;
+            max-width: 340px;
+        }
+        .resumen-titulo {
+            font-size: 1.15em;
+            font-weight: 800;
+            margin-bottom: 14px;
+            color: #222;
+        }
+        .resumen-lista {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 14px 0;
+        }
+        .resumen-lista li {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 1.05em;
+            color: #222;
+        }
+        .resumen-total {
+            font-weight: 800;
+            font-size: 1.13em;
+            margin-top: 8px;
+            display: flex;
+            justify-content: space-between;
+            color: #e63946;
+        }
+        .resumen-pagar-btn {
+            background: #e63946;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 28px;
+            font-weight: 700;
+            font-size: 1em;
+            cursor: pointer;
+            margin: 18px auto 0 auto;
+            display: block;
+            box-shadow: 0 2px 8px #e6394610;
+            transition: background 0.18s;
+        }
+        .resumen-pagar-btn:hover {
+            background: #b92d3a;
+        }
+        /* Mensaje flotante de feedback centrado arriba */
+        .carrito-feedback {
+            position: fixed;
+            top: 32px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.98);
+            background: #43aa8b;
+            color: #fff;
+            border-radius: 10px;
+            padding: 14px 32px;
+            font-size: 1.08em;
+            font-weight: 600;
+            box-shadow: 0 4px 24px #0002;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s, transform 0.25s;
+            min-width: 220px;
+            text-align: center;
+        }
+        .carrito-feedback.show {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(-50%) scale(1.04);
+        }
+        @media (max-width: 700px) {
+            .carrito-feedback {
+                padding: 10px 10vw;
+                font-size: 1em;
+                min-width: 0;
+            }
+        }
+        @media (max-width: 900px) {
+            .main-content-grid { grid-template-columns: 1fr; gap: 18px; }
+            .carrito-lateral { max-width: 100%; width: 100%; }
+        }
+        @media (max-width: 700px) {
+            .main-content-grid { padding: 0 2vw; }
+            .menu-titulo { font-size: 1.3em; }
+            .menu-pre-card { font-size: 0.98em; }
+            .menu-tipo-titulo { font-size: 1em; }
+            .carrito-bloque, .resumen-bloque { padding: 14px 8px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sticky Navbar -->
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <img src="{% static 'img/base/logo.png' %}" alt="TopMeal Logo">
+            <a href="{% url 'inicio' %}">
+                <span>TopMeal</span>
+            </a>
+        </div>
+        <div class="navbar-actions">
+            {% if usuario_nombre %}
+                <div style="display:flex;align-items:center;gap:14px;">
+                    <span style="font-weight:600;padding:7px 18px;background:#f5e8d3;color:#e63946;border-radius:20px;font-size:1em;box-shadow:0 1px 6px #0001;display:flex;align-items:center;">
+                        <span style="vertical-align:middle;">{{ usuario_nombre }}</span>
+                    </span>
+                    <a href="{% url 'logout' %}" class="btn-outline" style="background:#e63946;color:#fff;border:none;">Cerrar sesión</a>
+                </div>
+            {% else %}
+                <a href="{% url 'register' %}" class="btn-outline">Registrarse</a>
+                <a href="{% url 'login' %}" class="btn-primary">Iniciar Sesión</a>
+            {% endif %}
+        </div>
+    </nav>
+    <!-- Hero Section -->
+    <header class="hero-section">
+        <div class="hero-bg-img"></div>
+        <div class="hero-content">
+            <div class="hero-info">
+                <h1>{{ restaurante.nombre }}</h1>
+                <div class="details">
+                    <div><b>Dirección:</b> {{ restaurante.direccion }}</div>
+                    <div><b>Tipo:</b> {{ restaurante.tipo }}{% if restaurante.precio_medio %} | <b>Precio medio:</b> {{ restaurante.precio_medio }} €{% endif %}</div>
+                </div>
+                <div class="rating">
+                    {{ restaurante.media_valoracion|default:"-" }} / 5
+                    {% if restaurante.num_opiniones %}
+                        <span style="font-size:0.7em;color:#fffbe6;">({{ restaurante.num_opiniones }} opiniones)</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="hero-img">
+                <img src="{{ restaurante.imagen_url }}" alt="Imagen principal de {{ restaurante.nombre }}">
+            </div>
+        </div>
+    </header>
+    <!-- CONTENIDO PRINCIPAL: Menú y Carrito/Resumen -->
+    <main class="main-content-grid">
+        <!-- MENÚ IZQUIERDA -->
+        <section class="menu-lateral">
+            <h2 class="menu-titulo">Menú</h2>
+            {% if menus_preestablecidos %}
+            <div class="menu-preestablecido">
+                <div class="menu-pre-card">
+                    <div class="menu-pre-nombre">{{ menus_preestablecidos.0.nombre }}</div>
+                    <div class="menu-pre-precio">{{ menus_preestablecidos.0.precio }}€ <span class="menu-pre-porpersona">por comensal</span></div>
+                    {% if menus_preestablecidos.0.descripcion %}
+                    <div class="menu-pre-desc">{{ menus_preestablecidos.0.descripcion }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+            {% regroup productos by tipo as productos_por_tipo %}
+            <div class="menu-lista-tipos">
+                {% for grupo in productos_por_tipo %}
+                <div class="menu-tipo">
+                    <div class="menu-tipo-titulo">{{ grupo.grouper|title }}</div>
+                    <ul class="menu-productos">
+                        {% for producto in grupo.list %}
+                        <li class="menu-producto">
+                            <span class="menu-prod-nombre">{{ producto.nombre }}</span>
+                            <span class="menu-prod-precio">{{ producto.precio|floatformat:2 }}€</span>
+                            <button class="menu-prod-add" title="Añadir al carrito" onclick="agregarAlCarrito(this, {{ producto.id }}, '{{ producto.nombre|escapejs }}', {{ producto.precio }}, '')">+</button>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        <!-- CARRITO Y RESUMEN DERECHA -->
+        <aside class="carrito-lateral">
+            <div class="carrito-bloque">
+                <div class="carrito-titulo">Tu cesta</div>
+                <ul class="carrito-lista" id="carrito-list">
+                    <!-- Productos del carrito -->
+                </ul>
+                <div class="carrito-vacio" id="carrito-vacio" style="display:none;">El carrito está vacío.</div>
+            </div>
+            <div class="resumen-bloque">
+                <div class="resumen-titulo">Resumen</div>
+                <ul class="resumen-lista">
+                    <li><span>Productos</span><span id="resumen-productos">0,00€</span></li>
+                    <li><span>Envío</span><span id="resumen-envio">3,00€</span></li>
+                    <li><span>Tarifas</span><span id="resumen-tarifas">2,05€</span></li>
+                </ul>
+                <div class="resumen-total"><span>Total</span> <span id="resumen-total">0,00€</span></div>
+                {% if usuario_nombre %}
+                <button class="resumen-pagar-btn" onclick="finalizarPedido()">Pagar y realizar pedido</button>
+                {% else %}
+                <div style="margin-top:18px;text-align:center;">
+                    <a href="{% url 'login' %}" class="resumen-pagar-btn" style="background:#bbb;pointer-events:auto;">Inicia sesión para pagar</a>
+                    <div style="color:#e63946;font-weight:600;margin-top:8px;">Debes iniciar sesión para finalizar el pedido.</div>
+                </div>
+                {% endif %}
+            </div>
+        </aside>
+    </main>
+    <div class="carrito-feedback" id="carrito-feedback"></div>
+    <!-- Footer -->
+    <footer class="footer" id="contacto" style="background: #222; color: #fff; padding: 36px 0 0 0; margin-top: 0;">
+        <div class="footer-main" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; max-width: 1100px; margin: 0 auto; padding: 0 24px; gap: 32px;">
+            <div class="footer-logo" style="display: flex; align-items: center; gap: 10px; font-size: 1.3em; font-weight: bold; color: #e63946;">
+                <img src="{% static 'img/base/logo.png' %}" alt="TopMeal Logo" style="height: 34px;">
+                <span>TopMeal</span>
+            </div>
+            <div class="footer-links" style="display: flex; gap: 38px;">
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <h5 style="color: #e9c46a; font-size: 1.05em; margin-bottom: 4px;">Colabora</h5>
+                    <a href="#" style="color: #fff; font-size: 0.98em; opacity: 0.85; transition: opacity 0.18s;">Repartidores</a>
+                    <a href="#" style="color: #fff; font-size: 0.98em; opacity: 0.85; transition: opacity 0.18s;">Trabaja con nosotros</a>
+                    <a href="#" style="color: #fff; font-size: 0.98em; opacity: 0.85; transition: opacity 0.18s;">Añade tu restaurante</a>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <h5 style="color: #e9c46a; font-size: 1.05em; margin-bottom: 4px;">Enlaces</h5>
+                    <a href="{% url 'acerca' %}" style="color: #fff; font-size: 0.98em; opacity: 0.85; transition: opacity 0.18s;">Acerca de nosotros</a>
+                    <a href="{% url 'contacto' %}" style="color: #fff; font-size: 0.98em; opacity: 0.85; transition: opacity 0.18s;">Contacto</a>
+                </div> 
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <h5 style="color: #e9c46a; font-size: 1.05em; margin-bottom: 4px;">Legal</h5>
+                    <a href="{% url 'legales' %}" style="color: #fff; font-size: 0.98em; opacity: 0.85; transition: opacity 0.18s;">Cookies</a>
+                    <a href="{% url 'legales' %}" style="color: #fff; font-size: 0.98em; opacity: 0.85; transition: opacity 0.18s;">Condiciones de uso</a>
+                    <a href="{% url 'legales' %}" style="color: #fff; font-size: 0.98em; opacity: 0.85; transition: opacity 0.18s;">Privacidad</a>
+                </div>
+            </div>
+            <div class="footer-social" style="background: #222; border-radius: 12px; padding: 18px 0; display: flex; justify-content: center; gap: 18px;">
+                <a href="#"><img src="https://img.icons8.com/color/48/000000/facebook-new.png" alt="Facebook" style="width: 32px; height: 32px; object-fit: contain; border-radius: 8px; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.07);"></a>
+                <a href="#"><img src="https://img.icons8.com/color/48/000000/instagram-new.png" alt="Instagram" style="width: 32px; height: 32px; object-fit: contain; border-radius: 8px; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.07);"></a>
+                <a href="#"><img src="https://img.icons8.com/color/48/000000/twitterx--v2.png" alt="X" style="width: 32px; height: 32px; object-fit: contain; border-radius: 8px; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.07);"></a>
+            </div>
+        </div>
+        <div class="footer-copy" style="text-align: center; color: #bbb; font-size: 0.98em; margin-top: 18px; padding-bottom: 18px;">
+            &copy; 2025 TopMeal. Todos los derechos reservados.
+        </div>
+    </footer>
+    <script>
+        // --- Carrito JS (igual que antes, pero ids y clases adaptados) ---
+        let carrito = [];
+        function mostrarFeedback(msg, color = '#43aa8b') {
+            let fb = document.getElementById('carrito-feedback');
+            if (!fb) {
+                fb = document.createElement('div');
+                fb.id = 'carrito-feedback';
+                fb.className = 'carrito-feedback';
+                document.body.appendChild(fb);
+            }
+            fb.textContent = msg;
+            fb.style.background = color;
+            fb.classList.add('show');
+            setTimeout(() => fb.classList.remove('show'), 1800);
+        }
+        function renderCarrito() {
+            const lista = document.getElementById('carrito-list');
+            const vacio = document.getElementById('carrito-vacio');
+            const resumenProductos = document.getElementById('resumen-productos');
+            const resumenEnvio = document.getElementById('resumen-envio');
+            const resumenTarifas = document.getElementById('resumen-tarifas');
+            const resumenTotal = document.getElementById('resumen-total');
+            lista.innerHTML = '';
+            let subtotal = 0;
+            const envio = 3.00;
+            const tarifas = 2.05;
+            if (carrito.length === 0) {
+                vacio.style.display = 'block';
+                resumenProductos.textContent = '0,00€';
+                resumenEnvio.textContent = envio.toFixed(2).replace('.', ',') + '€';
+                resumenTarifas.textContent = tarifas.toFixed(2).replace('.', ',') + '€';
+                resumenTotal.textContent = (envio + tarifas).toFixed(2).replace('.', ',') + '€';
+                return;
+            }
+            vacio.style.display = 'none';
+            carrito.forEach((item, idx) => {
+                const li = document.createElement('li');
+                li.className = 'carrito-item';
+                li.innerHTML = `
+                    <span class="carrito-item-nombre">${item.nombre}</span>
+                    <button class="carrito-cantidad-btn" title="Quitar uno" onclick="cambiarCantidad(${idx}, -1)">-</button>
+                    <span class="carrito-item-cantidad">${item.cantidad}</span>
+                    <button class="carrito-cantidad-btn" title="Añadir uno" onclick="cambiarCantidad(${idx}, 1)">+</button>
+                    <span class="carrito-item-precio">${(item.precio * item.cantidad).toFixed(2).replace('.', ',')}€</span>
+                `;
+                lista.appendChild(li);
+                subtotal += item.precio * item.cantidad;
+            });
+            resumenProductos.textContent = subtotal.toFixed(2).replace('.', ',') + '€';
+            resumenEnvio.textContent = envio.toFixed(2).replace('.', ',') + '€';
+            resumenTarifas.textContent = tarifas.toFixed(2).replace('.', ',') + '€';
+            const total = subtotal + envio + tarifas;
+            resumenTotal.textContent = total.toFixed(2).replace('.', ',') + '€';
+        }
+        function agregarAlCarrito(btn, id, nombre, precio, imagen_url) {
+            const idx = carrito.findIndex(p => p.id === id);
+            if (idx >= 0) {
+                carrito[idx].cantidad += 1;
+                mostrarFeedback('Añadido otro ' + nombre);
+            } else {
+                carrito.push({id, nombre, precio, imagen_url, cantidad: 1});
+                mostrarFeedback('Producto añadido: ' + nombre);
+            }
+            if (btn) {
+                btn.classList.add('added');
+                setTimeout(() => btn.classList.remove('added'), 400);
+            }
+            renderCarrito();
+        }
+        function quitarDelCarrito(idx) {
+            mostrarFeedback('Producto eliminado', '#e63946');
+            carrito.splice(idx, 1);
+            renderCarrito();
+        }
+        function cambiarCantidad(idx, delta) {
+            if (carrito[idx]) {
+                carrito[idx].cantidad += delta;
+                if (carrito[idx].cantidad <= 0) {
+                    quitarDelCarrito(idx);
+                } else {
+                    mostrarFeedback('Cantidad actualizada');
+                    renderCarrito();
+                }
+            }
+        }
+        function vaciarCarrito() {
+            carrito = [];
+            mostrarFeedback('Carrito vaciado', '#e63946');
+            renderCarrito();
+        }
+        function finalizarPedido() {
+            if (carrito.length === 0) {
+                mostrarFeedback('El carrito está vacío', '#e63946');
+                return;
+            }
+            // Calcular el total igual que en el resumen
+            let subtotal = 0;
+            const envio = 3.00;
+            const tarifas = 2.05;
+            carrito.forEach(item => {
+                subtotal += item.precio * item.cantidad;
+            });
+            const total = subtotal + envio + tarifas;
+            // Enviar el total al backend en céntimos
+            fetch("/crear-sesion-pago/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify({ total: Math.round(total * 100) })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.url) {
+                    window.location.href = data.url;
+                } else {
+                    alert("Error: " + data.error);
+                }
+            });
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            renderCarrito();
+        });
+
+        document.getElementById("realizar-pedido").addEventListener("click", function () {
+        fetch("/crear-sesion-pago/", {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.url) {
+            window.location.href = data.url;
+            } else {
+            alert("Error: " + data.error);
+            }
+        });
+        });
+    </script>
+</body>
+</html>

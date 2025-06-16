@@ -5,11 +5,15 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Usuarios
 from django.views.generic.detail import DetailView
-from .models import Restaurantes , Menu , Opiniones
+from .models import Restaurantes , Menu , Opiniones , Productos
 from django.http import JsonResponse
 from .models import Reservas
 from django.views.decorators.csrf import csrf_exempt
 import json
+import stripe
+from django.conf import settings
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 
 # Create your views here.
@@ -114,9 +118,12 @@ class RestauranteDetailView(DetailView):
     context_object_name = "restaurante"
 
     def get_context_data(self, **kwargs):
-            context = super().get_context_data(**kwargs)
-            context['menu'] = Menu.objects.filter(restaurante_id=self.object.id).first()
-            return context
+        context = super().get_context_data(**kwargs)
+        context['menu'] = Menu.objects.filter(restaurante_id=self.object.id).first()
+        opiniones_qs = Opiniones.objects.filter(restaurante_id=self.object.id)
+        context['ultimas_opiniones'] = opiniones_qs.order_by('-id')[:3]
+        context['num_opiniones_real'] = opiniones_qs.count()
+        return context
 
 @csrf_exempt
 def api_reservar(request, restaurante_id):
@@ -145,3 +152,58 @@ def api_reservar(request, restaurante_id):
         )
         return JsonResponse({'success': True})
     return JsonResponse({'success': False, 'error': 'Método no permitido'})
+
+class PedidoDomicilioView(DetailView):
+    model = Restaurantes
+    template_name = "base/pedido_domicilio.html"
+    context_object_name = "restaurante"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        menu = Menu.objects.filter(restaurante_id=self.object.id).first()
+        context['menu'] = menu
+        # Obtener productos del menú de este restaurante
+        if menu:
+            context['productos'] = Productos.objects.filter(menu=menu)
+        else:
+            context['productos'] = []
+        return context
+    
+
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
+
+@csrf_exempt
+def crear_sesion_pago(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            total = data.get('total')  # total en céntimos
+            if not total or not isinstance(total, int) or total < 1:
+                return JsonResponse({'error': 'Total inválido.'})
+            session = stripe.checkout.Session.create(
+                payment_method_types=['card'],
+                mode='payment',
+                line_items=[{
+                    'price_data': {
+                        'currency': 'eur',
+                        'unit_amount': total,  # total en céntimos
+                        'product_data': {
+                            'name': 'Pedido a domicilio',
+                        },
+                    },
+                    'quantity': 1,
+                }],
+                success_url='http://localhost:8000/pedido/exito/',
+                cancel_url='http://localhost:8000/pedido/cancelado/',
+            )
+            return JsonResponse({'url': session.url})
+        except Exception as e:
+            return JsonResponse({'error': str(e)})
+def pedido_exito(request):
+    return render(request, 'base/pedido_exito.html')
+
+def pedido_cancelado(request):
+    return render(request, 'base/pedido_cancelado.html')
+
+

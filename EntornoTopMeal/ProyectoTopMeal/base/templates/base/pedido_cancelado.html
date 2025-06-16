@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago cancelado | TopMeal</title>
+    <link rel="stylesheet" href="{% static 'css/base/inicio.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="{% static 'img/base/logo.png' %}" type="image/x-icon">
+</head>
+<body>
+    <!-- Sticky Navbar -->
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <img src="{% static 'img/base/logo.png' %}" alt="TopMeal Logo">
+            <a href="/">
+                <span>TopMeal</span>
+            </a>
+        </div>
+    </nav>
+    <main>
+        <div style="max-width:600px;margin:60px auto;padding:40px 24px;background:#fff;border-radius:12px;box-shadow:0 2px 16px #0002;text-align:center;">
+            <h1 style="color:#e63946;font-size:2.2em;margin-bottom:18px;">Pago cancelado</h1>
+            <p style="font-size:1.2em;color:#222;">El pago no se ha completado.<br>Puedes intentarlo de nuevo cuando quieras.</p>
+            <a href="/" style="display:inline-block;margin-top:28px;padding:12px 32px;background:#e63946;color:#fff;border-radius:8px;font-weight:700;text-decoration:none;">Volver al inicio</a>
+        </div>
+    </main>
+</body>
+</html>
